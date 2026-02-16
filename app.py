@@ -1,25 +1,60 @@
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
+SKILL_TIME = {
+    "Python": 30,
+    "Statistics": 25,
+    "SQL": 20,
+    "Machine Learning": 40,
+    "Linear Algebra": 20,
+    "Deep Learning": 45,
+    "HTML": 15,
+    "CSS": 15,
+    "JavaScript": 30,
+    "React": 35
+}
 
-REQUIRED_SKILLS = ["Python", "Statistics", "Machine Learning", "SQL"]
+# Career skill requirements
+CAREER_PATHS = {
+    "data scientist": ["Python", "Statistics", "SQL", "Machine Learning"],
+    "machine learning engineer": ["Python", "Linear Algebra", "Machine Learning", "Deep Learning"],
+    "web developer": ["HTML", "CSS", "JavaScript", "React"]
+}
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
 @app.route("/generate", methods=["POST"])
 def generate():
-    user_skills = request.form.get("skills")
-    user_skills = [skill.strip() for skill in user_skills.split(",")]
+    career = request.form.get("career")
+    user_input = request.form.get("skills")
 
-    missing = []
+    if not career or not user_input:
+        return render_template("index.html")
 
-    for skill in REQUIRED_SKILLS:
-        if skill not in user_skills:
-            missing.append(skill)
+    career = career.lower()
+    user_skills = [skill.strip().lower() for skill in user_input.split(",")]
 
-    return render_template("index.html", missing=missing)
+    if career not in CAREER_PATHS:
+        return render_template("index.html", error="Career not found")
+
+    required_skills = CAREER_PATHS[career]
+
+    missing_skills = []
+    
+    for skill in required_skills:
+        if skill.lower() not in user_skills:
+            missing_skills.append(skill)
+    total_days=0
+    for skill in missing_skills:
+        total_days += SKILL_TIME.get(skill, 20)
+
+    return render_template("index.html",
+                       career=career.title(),
+                       missing=missing_skills,
+                       time=total_days)
 
 if __name__ == "__main__":
     app.run(debug=True)

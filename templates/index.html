@@ -2,26 +2,74 @@
 <html>
 <head>
     <title>Learning Path Recommender</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f6f9;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            margin: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-top: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        ul {
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Learning Path Recommender</h1>
-
-    <form method="POST" action="/generate">
-        <label>Enter your skills (comma separated):</label><br>
-        <input type="text" name="skills" required>
-        <br><br>
-        <button type="submit">Generate Learning Path</button>
-    </form>
-
-    {% if missing %}
-        <h2>You need to learn:</h2>
-        <ul>
-            {% for skill in missing %}
-                <li>{{ skill }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
+    <div class="container">
+        <h1>Learning Path Recommender</h1>
+    
+        <form method="POST" action="/generate">
+            <label>Enter your target career:</label><br>
+            <input type="text" name="career" required><br><br>
+    
+            <label>Enter your current skills (comma separated):</label><br>
+            <input type="text" name="skills" required><br><br>
+    
+            <button type="submit">Generate Learning Path</button>
+        </form>
+    
+        {% if error %}
+            <p style="color:red;">{{ error }}</p>
+        {% endif %}
+    
+        {% if missing %}
+            <h2>To become {{ career }}, you need to learn:</h2>
+            <ul>
+                {% for skill in missing %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if time %}
+        <h3>Estimated completion time: {{ time }} days</h3>
+        {% endif %}
+    </div>
 </body>
 </html>
