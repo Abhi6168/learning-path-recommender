@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learning Path Recommender</title>
+</head>
+<body>
+
+    <h1>Learning Path Recommender</h1>
+
+    <form method="POST" action="/generate">
+        <label>Enter your skills (comma separated):</label><br>
+        <input type="text" name="skills" required>
+        <br><br>
+        <button type="submit">Generate Learning Path</button>
+    </form>
+
+    {% if missing %}
+        <h2>You need to learn:</h2>
+        <ul>
+            {% for skill in missing %}
+                <li>{{ skill }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</body>
+</html>
